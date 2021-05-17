@@ -139,15 +139,44 @@ $ cargo build
 
 关于更多 Cargo 的信息，请查阅 [其文档](https://doc.rust-lang.org/cargo/)。
 
-## 总结
+## 使用Cargo 编译多个二进制文件
 
-你已经准备好开启 Rust 之旅了！在本章中，你学习了如何：
+添加`[[bin]]`节点，每个节点对应一个二进制文件
 
-- 使用 `rustup` 安装最新稳定版的 Rust
-- 更新到新版的 Rust
-- 打开本地安装的文档
-- 直接通过 `rustc` 编写并运行 Hello, world! 程序
-- 使用 Cargo 创建并运行新项目
+```
+[package]
+name = "studyrust"
+version = "0.1.0"
+authors = ["chry <a8512413@163.com>"]
+edition = "2018"
+
+[[bin]]
+name = "01hello_world"
+path = "src/01hello_world.rs"
+
+[[bin]]
+name = "02variable_const"
+path = "src/02variable_const.rs"
+
+[[bin]]
+name = "03data_type"
+path = "src/03data_type.rs"
+
+[[bin]]
+name = "04function"
+path = "src/04function.rs"
+
+[[bin]]
+name = "05control_flow"
+path = "src/05control_flow.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+```
+
+
 
 
 

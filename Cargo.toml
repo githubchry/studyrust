@@ -1,0 +1,29 @@
+[package]
+name = "studyrust"
+version = "0.1.0"
+authors = ["chry <a8512413@163.com>"]
+edition = "2018"
+
+[[bin]]
+name = "01hello_world"
+path = "src/01hello_world.rs"
+
+[[bin]]
+name = "02variable_const"
+path = "src/02variable_const.rs"
+
+[[bin]]
+name = "03data_type"
+path = "src/03data_type.rs"
+
+[[bin]]
+name = "04function"
+path = "src/04function.rs"
+
+[[bin]]
+name = "05control_flow"
+path = "src/05control_flow.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
