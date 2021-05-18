@@ -27,6 +27,11 @@ path = "src/05control_flow.rs"
 [[bin]]
 name = "06ownership"
 path = "src/06ownership.rs"
+
+[[bin]]
+name = "07references"
+path = "src/07references.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
