@@ -24,6 +24,9 @@ path = "src/04function.rs"
 name = "05control_flow"
 path = "src/05control_flow.rs"
 
+[[bin]]
+name = "06ownership"
+path = "src/06ownership.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
