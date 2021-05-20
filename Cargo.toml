@@ -36,6 +36,10 @@ path = "src/07references.rs"
 name = "08slice"
 path = "src/08slice.rs"
 
+[[bin]]
+name = "09struct"
+path = "src/09struct.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
