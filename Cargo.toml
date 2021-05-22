@@ -40,6 +40,18 @@ path = "src/08slice.rs"
 name = "09struct"
 path = "src/09struct.rs"
 
+[[bin]]
+name = "10impl"
+path = "src/10impl.rs"
+
+[[bin]]
+name = "11enum"
+path = "src/11enum.rs"
+
+[[bin]]
+name = "12match_if-let"
+path = "src/12match_if-let.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
