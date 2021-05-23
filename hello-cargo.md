@@ -12,7 +12,48 @@ $ cargo --version
 
 如果你看到了版本号，说明已安装！如果看到类似 `command not found` 的错误，你应该查看相应安装文档以确定如何单独安装 Cargo。
 
-### 使用 Cargo 创建项目
+### 相关概念
+
+#### package 和 crate
+
+crate 是一个二进制项(*binary crate*)或者库(*library crate*)。*crate root* 是一个源文件，Rust 编译器以它为起始点，并构成 crate 的根模块。
+
+包（package）是提供一系列功能的一个或者多个 crate。
+
+一个包会包含有一个 *Cargo.toml* 文件，阐述如何去构建这些 crate。
+
+create分为  和 *library crate* ，每个create都有一个 *crate root*  ，
+
+规则：
+
+- 包中至多 **只能** 包含一个库 crate(library crate)；
+
+- 包中可以包含任意多个二进制 crate(binary crate)；
+
+- 包中至少包含一个 crate，无论是库的还是二进制的。
+
+约定:
+
+- *src/main.rs* 就是一个与包同名的二进制 crate 的 crate 根
+- 如果包目录中包含 *src/lib.rs*，则包带有与其同名的库 crate，且 *src/lib.rs* 是 crate 根。
+
+
+
+一个 crate 会将一个作用域内的相关功能分组到一起，使得该功能可以很方便地在多个项目之间共享。
+
+#### 模块
+
+- binary crate - 二进制项
+
+- library crate - 库
+
+- *crate root*
+
+  *crate root* 是一个源文件，Rust 编译器以它为起始点，并构成 crate 的根模块。
+
+- 模块
+
+### 使用 Cargo 创建项目（包）
 
 ```text
 $ cargo new hello_cargo
@@ -23,7 +64,7 @@ $ cd hello_cargo
 
 进入 *hello_cargo* 目录并列出文件。将会看到 Cargo 生成了两个文件和一个目录：一个 *Cargo.toml* 文件，一个 *src* 目录，以及位于 *src* 目录中的 *main.rs* 文件。它也在 *hello_cargo* 目录初始化了一个 git 仓库，以及一个 *.gitignore* 文件。
 
-
+> Cargo 遵循的一个约定：*src/main.rs* 就是一个与包同名的二进制 crate 的 crate 根。同样的，Cargo 知道如果包目录中包含 *src/lib.rs*，则包带有与其同名的库 crate，且 *src/lib.rs* 是 crate 根。crate 根文件将由 Cargo 传递给 `rustc` 来实际构建库或者二进制项目。
 
 请自行选用文本编辑器打开 *Cargo.toml* 文件。它应该看起来如示例 1-2 所示：
 
