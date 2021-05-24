@@ -161,6 +161,29 @@ pub fn use_relative_path() {
 }
 
 // ========================================================================
+// 将模块分割进不同文件
+// ========================================================================
+mod private_mod;
+// 在 mod private_mod 后使用分号，而不是代码块，这将告诉 Rust 在另一个与模块同名的文件中加载模块的内容。
+/*
+注意：
+在 crate root 实现 private_mod 需要以下代码：
+mod private_mod {
+    pub mod re_export_mod {
+        pub fn func() {}
+    }
+}
+
+但是如果将private_mod模块分割出来，只需要在 private_mod.rs 写入以下代码：
+pub mod re_export_mod {
+    pub fn func() {}
+}
+
+即分割出去的文件名就是模块名，不需要再使用花括号包一层。
+*/
+
+
+// ========================================================================
 // 使用 pub use 重导出名称
 // ========================================================================
 /*
@@ -168,14 +191,9 @@ pub fn use_relative_path() {
 如果为了让调用你编写的代码的代码能够像在自己的作用域内引用这些类型，可以结合 pub 和 use。
 这个技术被称为 “重导出（re-exporting）”，因为这样做将项引入作用域并同时使其可供其他代码引入自己的作用域。
 */
-// private_mod没有pub关键字 一般情况下不能在外部使用（如main.rs）
-mod private_mod {
-    pub mod re_export_mod {
-        pub fn func() {}
-    }
-}
-
+// private_mod并没有声明pub关键字 一般情况下不能在外部使用（如main.rs）
 pub use crate::private_mod::re_export_mod;
 // 使用pub use重导出后就可以在外部（如main.rs）使用本地private模块
+
 
 
