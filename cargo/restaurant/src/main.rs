@@ -76,6 +76,6 @@ fn main() {
     它包含下限但不包含上限，所以需要指定 1 和 101 来请求一个 1 和 100 之间的数。
     */
 
-    let secret_number = rand::thread_rng().gen_range(1, 101);
+    let secret_number = rand::thread_rng().gen_range(1..101);
     println!("{}", secret_number);
 }
