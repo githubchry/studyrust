@@ -70,6 +70,7 @@ fn main() {
     我们可以定义一个枚举，其成员会存放这些不同类型的值，同时所有这些枚举成员都会被当作相同类型，那个枚举的类型。
     接着可以创建一个储存枚举值的 vector，这样最终就能够储存不同类型的值了。
     */
+    #[derive(Debug)]    //增加注解来派生 Debug trait 以打印枚举内结构体数据
     enum SpreadsheetCell {
         Int(i32),
         Float(f64),
@@ -81,6 +82,8 @@ fn main() {
         SpreadsheetCell::Text(String::from("blue")),
         SpreadsheetCell::Float(10.12),
     ];
+
+    println!("{:?}", row);
 
     /*
     Rust 在编译时就必须准确的知道 vector 中类型的原因在于它需要知道储存每个元素到底需要多少内存。
