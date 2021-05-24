@@ -6,4 +6,8 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+# dependencies 片段告诉 Cargo 本项目依赖了哪些外部 crate 及其版本
 [dependencies]
+# Rust 标准库中尚未包含随机数功能，但提供了一个 rand crate
+# 语义化版本 0.8.3  事实上是 ^0.8.3 的简写，它表示 “任何与 0.8.3 版本公有 API 相兼容的版本”。
+rand = "0.8.3"  #引入一个 rand 依赖

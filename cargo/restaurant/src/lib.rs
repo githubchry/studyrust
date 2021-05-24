@@ -12,7 +12,7 @@
 
 下面模拟实现前台front_of_house模块：
 */
-mod front_of_house {
+pub mod front_of_house {
     /*
     接待员模块 hosting
 
@@ -96,7 +96,7 @@ mod back_of_house {
         super::front_of_house::serving::server_order();
     }
 
-    fn cook_order() {}
+    pub fn cook_order() {}
 
 
     /*
@@ -143,3 +143,39 @@ pub fn eat_breakfast_at_restaurant() {
     let order1 = back_of_house::Appetizer::Soup;
     let order2 = back_of_house::Appetizer::Salad;
 }
+
+// ========================================================================
+// 使用 use 关键字将名称引入作用域
+// ========================================================================
+/*
+目前为止，似乎我们编写的用于调用函数的路径都很冗长且重复，并不方便。
+可以使用 use 关键字将路径一次性引入作用域，然后调用该路径中的项，就如同它们是本地项一样。
+还可以使用 use 和相对路径来将一个项引入作用域。
+use甚至可以直接把最底层的函数引入作用域 但并不推荐这么做
+
+下面仅仅演示使用 use 和相对路径来将一个项引入作用域。其他方式见main.rs.
+*/
+use front_of_house::serving;
+pub fn use_relative_path() {
+    serving::server_order();
+}
+
+// ========================================================================
+// 使用 pub use 重导出名称
+// ========================================================================
+/*
+当使用 use 关键字将名称导入作用域时，在新作用域中可用的名称是私有的。
+如果为了让调用你编写的代码的代码能够像在自己的作用域内引用这些类型，可以结合 pub 和 use。
+这个技术被称为 “重导出（re-exporting）”，因为这样做将项引入作用域并同时使其可供其他代码引入自己的作用域。
+*/
+// private_mod没有pub关键字 一般情况下不能在外部使用（如main.rs）
+mod private_mod {
+    pub mod re_export_mod {
+        pub fn func() {}
+    }
+}
+
+pub use crate::private_mod::re_export_mod;
+// 使用pub use重导出后就可以在外部（如main.rs）使用本地private模块
+
+
