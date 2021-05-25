@@ -56,6 +56,10 @@ path = "src/12match_if-let.rs"
 name = "13vector"
 path = "src/13vector.rs"
 
+[[bin]]
+name = "14string"
+path = "src/14string.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
