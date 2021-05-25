@@ -60,6 +60,10 @@ path = "src/13vector.rs"
 name = "14string"
 path = "src/14string.rs"
 
+[[bin]]
+name = "15hash_map"
+path = "src/15hash_map.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
