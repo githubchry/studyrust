@@ -64,6 +64,14 @@ path = "src/14string.rs"
 name = "15hash_map"
 path = "src/15hash_map.rs"
 
+[[bin]]
+name = "16panic"
+path = "src/16panic.rs"
+
+[[bin]]
+name = "17result"
+path = "src/17result.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
