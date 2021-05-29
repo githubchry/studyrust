@@ -17,7 +17,7 @@ fn main() {
     Rust 确实 包含了打印出调试信息的功能，不过我们必须为结构体显式选择这个功能。
     为此，在结构体定义之前加上 #[derive(Debug)] 注解
     */
-    #[derive(Debug)]    //增加注解来派生 Debug trait
+    #[derive(Debug)]    //增加注解来派生 Debug trait 以打印枚举内结构体数据
     struct Rectangle {
         width: u32,
         height: u32,

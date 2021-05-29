@@ -76,6 +76,10 @@ path = "src/17result.rs"
 name = "18generics"
 path = "src/18generics.rs"
 
+[[bin]]
+name = "19trait"
+path = "src/19trait.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
