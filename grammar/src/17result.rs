@@ -146,6 +146,7 @@ fn main() {
     它会打开文件、新建一个 String、读取文件的内容，并将内容放入 String，接着返回它。
     当然，这样做就没有展示所有这些错误处理的机会了，所以我们最初就选择了艰苦的道路。
     */
+    use std::fs;
     fn read_username_from_file_ultimate() -> Result<String, io::Error> {
         fs::read_to_string("hello.txt")
     }
