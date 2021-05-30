@@ -80,6 +80,9 @@ path = "src/18generics.rs"
 name = "19trait"
 path = "src/19trait.rs"
 
+[[bin]]
+name = "20lifetime"
+path = "src/20lifetime.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
