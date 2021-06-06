@@ -9,7 +9,7 @@ fn main() {
     v.push(6);
     v.push(7);
     v.push(8);
-    print!("{:?}\n",v);
+    print!("{:?}\n", v);
 
     // 丢弃 vector 时也会丢弃其所有元素
     {
@@ -39,7 +39,7 @@ fn main() {
     */
     let first = &v[0];
     v.push(6);
-    print!("{:?}\n",v);
+    print!("{:?}\n", v);
     // println!("The first element is: {}", first);    // 编译错误：同时存在可变和不可变引用
 
 
@@ -49,8 +49,7 @@ fn main() {
         Some(val) => println!("vector last val is {}", val),
         None => println!("vector is null."),
     }
-    print!("{:?}\n",v);
-
+    print!("{:?}\n", v);
 
 
     // 遍历 vector 中的元素并修改：
@@ -62,6 +61,16 @@ fn main() {
     for i in &v {
         println!("{}", i);
     }
+
+    // vector作为参数  &[T] <=> Vec<T>
+    let str_vec: Vec<&str> = vec!["hello", "world"];
+    fn print_vec(args: &[&str]) {
+        for s in args {
+            println!("{}", s);
+        }
+    }
+    print_vec(&str_vec);
+
 
     /*
     使用枚举来储存多种类型
