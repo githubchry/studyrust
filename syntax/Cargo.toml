@@ -83,6 +83,11 @@ path = "src/19trait.rs"
 [[bin]]
 name = "20lifetime"
 path = "src/20lifetime.rs"
+
+[[bin]]
+name = "21closures"
+path = "src/21closures.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
