@@ -23,32 +23,23 @@ pub struct Config {
 }
 
 impl Config {
-    // 注意入参类型等价: Vec<String>与[String]
+    // 因为我们拥有 args 的所有权，并且将通过对其进行迭代来改变 args ，所以我们可以将 mut 关键字添加到 args 参数的规范中以使其可变。
     // 返回 Result 而不应该 返回Config或调用 panic!
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
+    pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
         // &'static str => 显式静态声明 => 等价于隐式静态声明 &str
-        // 必要的错误处理
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
+        args.next();    // env::args 返回值的第一个值是程序的名称, 忽略并获取下一个值
 
-        let query = args[1].clone();       // 要搜索的字符串
-        let filename = args[2].clone();    // 要搜索的文件名
-        // ========================================================================
-        // 使用 clone 的权衡取舍
-        // ========================================================================
-        /*
-        最简单但有些不太高效的方式是调用这些值的 clone 方法。
-        这会生成 Config 实例可以拥有的数据的完整拷贝，不过会比储存字符串数据的引用消耗更多的时间和内存。
-        不过拷贝数据使得代码显得更加直白因为无需管理引用的生命周期，所以在这种情况下牺牲一小部分性能来换取简洁性的取舍是值得的。
+        // 要搜索的字符串
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
 
-        由于其运行时消耗，许多 Rustacean 之间有一个趋势是倾向于避免使用 clone 来解决所有权问题。
-        在关于迭代器的第十三章中，我们将会学习如何更有效率的处理这种情况，
-        不过现在，复制一些字符串来取得进展是没有问题的，因为只会进行一次这样的拷贝，而且文件名和要搜索的字符串都比较短。
-
-        在第一轮编写时拥有一个可以工作但有点低效的程序要比尝试过度优化代码更好一些。
-        随着你对 Rust 更加熟练，将能更轻松的直奔合适的方法，不过现在调用 clone 是完全可以接受的。
-        */
+        // 要搜索的文件名
+        let filename = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a filename string"),
+        };
 
         // println!("case_sensitive: {:?}", env::var("CASE_INSENSITIVE"));
         let case_sensitive = env::var("CASE_INSENSITIVE").is_err(); // 注意这里仅判断环境变量存在与否，不关心环境变量的内容！
@@ -123,6 +114,7 @@ search函数设计：
 因为实现里面vector包含了contents slice的字符串 slice
 */
 fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    /*
     let mut results = Vec::new();
     // 使用 lines 方法遍历每一行
     for line in contents.lines() {
@@ -133,6 +125,13 @@ fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
         }
     }
     results
+    */
+    // 使用迭代器适配器来使代码更简明 也避免了一个可变的中间 results vector 的使用。
+    // 函数式编程风格倾向于最小化可变状态的数量来使代码更简洁。
+    // 去掉可变状态可能会使得将来进行并行搜索的增强变得更容易，因为我们不必管理 results vector 的并发访问。
+    contents.lines()
+        .filter(|line| line.contains(query))    // 使用 filter 适配器只保留 line.contains(query) 返回 true 的那些行
+        .collect()                              // 将匹配行收集到另一个 vector 中
 }
 
 

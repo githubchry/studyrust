@@ -52,10 +52,10 @@ fn main() {
 
     这里出于简单考虑使用了 std::env::args，因为 OsString 值每个平台都不一样而且比 String 值处理起来更为复杂。
     */
-    let args: Vec<String> = env::args().collect();
-    println!("运行参数： {:?}", args);
-
-    let cfg = Config::new(&args).unwrap_or_else(|err| {
+    println!("运行参数： {:?}", env::args());
+    // 直接使用 env::args 返回的迭代器: 一旦 Config::new 获取了迭代器的所有权并不再使用借用的索引操作，
+    // 就可以将迭代器中的 String 值移动到 Config 中，而不是调用 clone 分配新的空间。
+    let cfg = Config::new(env::args()).unwrap_or_else(|err| {
         // println! 函数只能够打印到标准输出，标准库提供了 eprintln! 宏来打印到标准错误流
         // cargo run > out.txt 如此依旧能看到错误打印
         eprintln!("Problem parsing arguments: {}", err);
