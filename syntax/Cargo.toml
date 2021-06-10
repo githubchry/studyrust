@@ -88,6 +88,10 @@ path = "src/20lifetime.rs"
 name = "21closures"
 path = "src/21closures.rs"
 
+[[bin]]
+name = "22iterator"
+path = "src/22iterator.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
