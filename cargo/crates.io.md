@@ -4,217 +4,6 @@
 
 Rust 和 Cargo 有一些帮助它人更方便找到和使用你发布的包的功能。我们将介绍一些这样的功能，接着讲到如何发布一个包。
 
-### [编写有用的文档注释](https://rustwiki.org/zh-CN/book/ch14-02-publishing-to-crates-io.html#编写有用的文档注释)
-
-准确的包文档有助于其他用户理解如何以及何时使用他们，所以花一些时间编写文档是值得的。第三章中我们讨论了如何使用两斜杠 `//` 注释 Rust 代码。Rust 也有特定的用于文档的注释类型，通常被称为 **文档注释**（*documentation comments*），他们会生成 HTML 文档。这些 HTML 展示公有 API 文档注释的内容，他们意在让对库感兴趣的程序员理解如何 **使用** 这个 crate，而不是它是如何被 **实现** 的。
-
-文档注释使用三斜杠 `///` 而不是两斜杆以支持 Markdown 注解来格式化文本。文档注释就位于需要文档的项的之前。示例 14-1 展示了一个 `my_crate` crate 中 `add_one` 函数的文档注释：
-
-文件名: src/lib.rs
-
-```rust
-/// Adds one to the number given.
-///
-/// # Examples
-///
-/// ```
-/// let arg = 5;
-/// let answer = my_crate::add_one(arg);
-///
-/// assert_eq!(6, answer);
-/// ```
-pub fn add_one(x: i32) -> i32 {
-    x + 1
-}
-```
-
-示例 14-1：一个函数的文档注释
-
-这里，我们提供了一个 `add_one` 函数工作的描述，接着开始了一个标题为 `Examples` 的部分，和展示如何使用 `add_one` 函数的代码。可以运行 `cargo doc` 来生成这个文档注释的 HTML 文档。这个命令运行由 Rust 分发的工具 `rustdoc` 并将生成的 HTML 文档放入 *target/doc* 目录。
-
-为了方便起见，运行 `cargo doc --open` 会构建当前 crate 文档（同时还有所有 crate 依赖的文档）的 HTML 并在浏览器中打开。导航到 `add_one` 函数将会发现文档注释的文本是如何渲染的，如图 14-1 所示：
-
-![`my_crate` 的 `add_one` 函数所渲染的文档注释 HTML](https://rustwiki.org/zh-CN/book/img/trpl14-01.png)
-
-图 14-1：`add_one` 函数的文档注释 HTML
-
-#### [常用（文档注释）部分](https://rustwiki.org/zh-CN/book/ch14-02-publishing-to-crates-io.html#常用文档注释部分)
-
-示例 14-1 中使用了 `# Examples` Markdown 标题在 HTML 中创建了一个以 “Examples” 为标题的部分。其他一些 crate 作者经常在文档注释中使用的部分有：
-
-- **Panics**：这个函数可能会 `panic!` 的场景。并不希望程序崩溃的函数调用者应该确保他们不会在这些情况下调用此函数。
-- **Errors**：如果这个函数返回 `Result`，此部分描述可能会出现何种错误以及什么情况会造成这些错误，这有助于调用者编写代码来采用不同的方式处理不同的错误。
-- **Safety**：如果这个函数使用 `unsafe` 代码（这会在第十九章讨论），这一部分应该会涉及到期望函数调用者支持的确保 `unsafe` 块中代码正常工作的不变条件（invariants）。
-
-大部分文档注释不需要所有这些部分，不过这是一个提醒你检查调用你代码的人有兴趣了解的内容的列表。
-
-#### [文档注释作为测试](https://rustwiki.org/zh-CN/book/ch14-02-publishing-to-crates-io.html#文档注释作为测试)
-
-在文档注释中增加示例代码块是一个清楚的表明如何使用库的方法，这么做还有一个额外的好处：`cargo test` 也会像测试那样运行文档中的示例代码！没有什么比有例子的文档更好的了，但最糟糕的莫过于写完文档后改动了代码，而导致例子不能正常工作。尝试 `cargo test` 运行像示例 14-1 中 `add_one` 函数的文档；应该在测试结果中看到像这样的部分：
-
-```text
-   Doc-tests my_crate
-
-running 1 test
-test src/lib.rs - add_one (line 5) ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-```
-
-现在尝试改变函数或例子来使例子中的 `assert_eq!` 产生 panic。再次运行 `cargo test`，你将会看到文档测试捕获到了例子与代码不再同步！
-
-#### [注释包含项的结构](https://rustwiki.org/zh-CN/book/ch14-02-publishing-to-crates-io.html#注释包含项的结构)
-
-还有另一种风格的文档注释，`//!`，这为包含注释的项，而不是位于注释之后的项增加文档。这通常用于 crate 根文件（通常是 *src/lib.rs*）或模块的根文件为 crate 或模块整体提供文档。
-
-作为一个例子，如果我们希望增加描述包含 `add_one` 函数的 `my_crate` crate 目的的文档，可以在 *src/lib.rs* 开头增加以 `//!` 开头的注释，如示例 14-2 所示：
-
-文件名: src/lib.rs
-
-```rust
-//! # My Crate
-//!
-//! `my_crate` is a collection of utilities to make performing certain
-//! calculations more convenient.
-
-/// Adds one to the number given.
-// --snip--
-```
-
-示例 14-2：`my_crate` crate 整体的文档
-
-注意 `//!` 的最后一行之后没有任何代码。因为他们以 `//!` 开头而不是 `///`，这是属于包含此注释的项而不是注释之后项的文档。在这个情况中，包含这个注释的项是 *src/lib.rs* 文件，也就是 crate 根文件。这些注释描述了整个 crate。
-
-如果运行 `cargo doc --open`，将会发现这些注释显示在 `my_crate` 文档的首页，位于 crate 中公有项列表之上，如图 14-2 所示：
-
-![crate 整体注释所渲染的 HTML 文档](https://rustwiki.org/zh-CN/book/img/trpl14-02.png)
-
-图 14-2：包含 `my_crate` 整体描述的注释所渲染的文档
-
-位于项之中的文档注释对于描述 crate 和模块特别有用。使用他们描述其容器整体的目的来帮助 crate 用户理解你的代码组织。
-
-### [使用 `pub use` 导出合适的公有 API](https://rustwiki.org/zh-CN/book/ch14-02-publishing-to-crates-io.html#使用-pub-use-导出合适的公有-api)
-
-第七章介绍了如何使用 `mod` 关键字来将代码组织进模块中，如何使用 `pub` 关键字将项变为公有，和如何使用 `use` 关键字将项引入作用域。然而你开发时候使用的文件架构可能并不方便用户。你的结构可能是一个包含多个层级的分层结构，不过这对于用户来说并不方便。这是因为想要使用被定义在很深层级中的类型的人可能很难发现这些类型的存在。他们也可能会厌烦使用 `use my_crate::some_module::another_module::UsefulType;` 而不是 `use my_crate::UsefulType;` 来使用类型。
-
-公有 API 的结构是你发布 crate 时主要需要考虑的。crate 用户没有你那么熟悉其结构，并且如果模块层级过大他们可能会难以找到所需的部分。
-
-好消息是，即使文件结构对于用户来说 **不是** 很方便，你也无需重新安排内部组织：你可以选择使用 `pub use` 重导出（re-export）项来使公有结构不同于私有结构。重导出获取位于一个位置的公有项并将其公开到另一个位置，好像它就定义在这个新位置一样。
-
-例如，假设我们创建了一个描述美术信息的库 `art`。这个库中包含了一个有两个枚举 `PrimaryColor` 和 `SecondaryColor` 的模块 `kinds`，以及一个包含函数 `mix` 的模块 `utils`，如示例 14-3 所示：
-
-文件名: src/lib.rs
-
-```rust
-//! # Art
-//!
-//! A library for modeling artistic concepts.
-
-pub mod kinds {
-    /// The primary colors according to the RYB color model.
-    pub enum PrimaryColor {
-        Red,
-        Yellow,
-        Blue,
-    }
-
-    /// The secondary colors according to the RYB color model.
-    pub enum SecondaryColor {
-        Orange,
-        Green,
-        Purple,
-    }
-}
-
-pub mod utils {
-    use crate::kinds::*;
-
-    /// Combines two primary colors in equal amounts to create
-    /// a secondary color.
-    pub fn mix(c1: PrimaryColor, c2: PrimaryColor) -> SecondaryColor {
-        // --snip--
-    }
-}
-```
-
-示例 14-3：一个库 `art` 其组织包含 `kinds` 和 `utils` 模块
-
-`cargo doc` 所生成的 crate 文档首页如图 14-3 所示：
-
-![包含 `kinds` 和 `utils` 模块的 `art`](https://rustwiki.org/zh-CN/book/img/trpl14-03.png)
-
-图 14-3：包含 `kinds` 和 `utils` 模块的库 `art` 的文档首页
-
-注意 `PrimaryColor` 和 `SecondaryColor` 类型、以及 `mix` 函数都没有在首页中列出。我们必须点击 `kinds` 或 `utils` 才能看到他们。
-
-另一个依赖这个库的 crate 需要 `use` 语句来导入 `art` 中的项，这包含指定其当前定义的模块结构。示例 14-4 展示了一个使用 `art` crate 中 `PrimaryColor` 和 `mix` 项的 crate 的例子：
-
-文件名: src/main.rs
-
-```rust
-use art::kinds::PrimaryColor;
-use art::utils::mix;
-
-fn main() {
-    let red = PrimaryColor::Red;
-    let yellow = PrimaryColor::Yellow;
-    mix(red, yellow);
-}
-```
-
-示例 14-4：一个通过导出内部结构使用 `art` crate 中项的 crate
-
-示例 14-4 中使用 `art` crate 代码的作者不得不搞清楚 `PrimaryColor` 位于 `kinds` 模块而 `mix` 位于 `utils` 模块。`art` crate 的模块结构相比使用它的开发者来说对编写它的开发者更有意义。其内部的 `kinds` 模块和 `utils` 模块的组织结构并没有对尝试理解如何使用它的人提供任何有价值的信息。`art` crate 的模块结构因不得不搞清楚所需的内容在何处和必须在 `use` 语句中指定模块名称而显得混乱和不便。
-
-为了从公有 API 中去掉 crate 的内部组织，我们可以采用示例 14-3 中的 `art` crate 并增加 `pub use` 语句来重导出项到顶层结构，如示例 14-5 所示：
-
-文件名: src/lib.rs
-
-```rust
-//! # Art
-//!
-//! A library for modeling artistic concepts.
-
-pub use self::kinds::PrimaryColor;
-pub use self::kinds::SecondaryColor;
-pub use self::utils::mix;
-
-pub mod kinds {
-    // --snip--
-}
-
-pub mod utils {
-    // --snip--
-}
-```
-
-示例 14-5：增加 `pub use` 语句重导出项
-
-现在此 crate 由 `cargo doc` 生成的 API 文档会在首页列出重导出的项以及其链接，如图 14-4 所示，这使得 `PrimaryColor` 和 `SecondaryColor` 类型和 `mix` 函数更易于查找。
-
-![Rendered documentation for the `art` crate with the re-exports on the front page](https://rustwiki.org/zh-CN/book/img/trpl14-04.png)
-
-图 14-10：`art` 文档的首页，这里列出了重导出的项
-
-`art` crate 的用户仍然可以看见和选择使用示例 14-4 中的内部结构，或者可以使用示例 14-5 中更为方便的结构，如示例 14-6 所示：
-
-文件名: src/main.rs
-
-```rust
-use art::PrimaryColor;
-use art::mix;
-
-fn main() {
-    // --snip--
-}
-```
-
-示例 14-6：一个使用 `art` crate 中重导出项的程序
-
-对于有很多嵌套模块的情况，使用 `pub use` 将类型重导出到顶级结构对于使用 crate 的人来说将会是大为不同的体验。
-
-创建一个有用的公有 API 结构更像是一门艺术而非科学，你可以反复检视他们来找出最适合用户的 API。`pub use` 提供了解耦组织 crate 内部结构和与终端用户体现的灵活性。观察一些你所安装的 crate 的代码来看看其内部结构是否不同于公有 API。
-
 ### [创建 Crates.io 账号](https://rustwiki.org/zh-CN/book/ch14-02-publishing-to-crates-io.html#创建-cratesio-账号)
 
 在你可以发布任何 crate 之前，需要在 [crates.io](https://crates.io/) 上注册账号并获取一个 API token。为此，访问位于 [crates.io](https://crates.io/) 的首页并使用 GitHub 账号登陆。（目前 GitHub 账号是必须的，不过将来该网站可能会支持其他创建账号的方法）一旦登陆之后，查看位于 https://crates.io/me/ 的账户设置页面并获取 API token。接着使用该 API token 运行 `cargo login` 命令，像这样：
@@ -235,7 +24,7 @@ $ cargo login abcdefghijklmnopqrstuvwxyz012345
 
 ```toml
 [package]
-name = "guessing_game"
+name = "chry_minigrep"
 ```
 
 即使你选择了一个唯一的名称，如果此时尝试运行 `cargo publish` 发布该 crate 的话，会得到一个警告接着是一个错误：
@@ -257,8 +46,8 @@ error: api errors: missing or empty metadata fields: description, license.
 
 ```toml
 [package]
-name = "guessing_game"
-license = "MIT"
+name = "chry_minigrep"
+license = "MulanPSL-2.0"
 ```
 
 如果你希望使用不存在于 SPDX 的 license，则需要将 license 文本放入一个文件，将该文件包含进项目中，接着使用 `license-file` 来指定文件名而不是使用 `license` 字段。
@@ -271,12 +60,15 @@ license = "MIT"
 
 ```toml
 [package]
-name = "guessing_game"
+name = "chry_minigrep"  # 如果要发布到crates.io 要求包名在其仓库上未被占用，抢注方式，先到先得！
+license = "MulanPSL-2.0 OR Apache-2.0"     # 如果要发布到crates.io 要求声明采用的license，以告知用户可能在何种条款下使用该 crate
+# 如果要发布到crates.io 要求对该 crate 进行描述，以告知用户该 crate 的作用
+description = "A simple grep implementation from The Rust Programing Book.《Rust 程序设计语言》中的一个项目例程：获取一个文件名和一个字符串作为参数，接着读取文件并找到其中包含字符串参数的行，然后打印出这些行。"
 version = "0.1.0"
-authors = ["Your Name <you@example.com>"]
+authors = ["chry <a8512413@163.com>"]
 edition = "2018"
-description = "A fun game where you guess what number the computer has chosen."
-license = "MIT OR Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 ```
@@ -294,12 +86,12 @@ license = "MIT OR Apache-2.0"
 ```text
 $ cargo publish
  Updating registry `https://github.com/rust-lang/crates.io-index`
-Packaging guessing_game v0.1.0 (file:///projects/guessing_game)
-Verifying guessing_game v0.1.0 (file:///projects/guessing_game)
-Compiling guessing_game v0.1.0
-(file:///projects/guessing_game/target/package/guessing_game-0.1.0)
+Packaging chry_minigrep v0.1.0 (file:///projects/chry_minigrep)
+Verifying chry_minigrep v0.1.0 (file:///projects/chry_minigrep)
+Compiling chry_minigrep v0.1.0
+(file:///projects/chry_minigrep/target/package/chry_minigrep-0.1.0)
  Finished dev [unoptimized + debuginfo] target(s) in 0.19 secs
-Uploading guessing_game v0.1.0 (file:///projects/guessing_game)
+Uploading chry_minigrep v0.1.0 (file:///projects/chry_minigrep)
 ```
 
 恭喜！你现在向 Rust 社区分享了代码，而且任何人都可以轻松的将你的 crate 加入他们项目的依赖。
@@ -317,13 +109,54 @@ Uploading guessing_game v0.1.0 (file:///projects/guessing_game)
 为了撤回一个 crate，运行 `cargo yank` 并指定希望撤回的版本：
 
 ```text
-$ cargo yank --vers 1.0.1
+$ cargo yank --vers 0.1.0
 ```
 
 也可以撤销撤回操作，并允许项目可以再次开始依赖某个版本，通过在命令上增加 `--undo`：
 
 ```text
-$ cargo yank --vers 1.0.1 --undo
+$ cargo yank --vers 0.1.0 --undo
 ```
 
 撤回 **并没有** 删除任何代码。举例来说，撤回功能并不意在删除不小心上传的秘密信息。如果出现了这种情况，请立即重新设置这些秘密信息。
+
+## [使用 `cargo install` 从 Crates.io 安装二进制文件](https://rustwiki.org/zh-CN/book/ch14-04-installing-binaries.html#使用-cargo-install-从-cratesio-安装二进制文件)
+
+`cargo install` 命令用于在本地安装和使用二进制 crate。它并不打算替换系统中的包；它意在作为一个方便 Rust 开发者们安装其他人已经在 [crates.io](https://crates.io/) 上共享的工具的手段。只有拥有二进制目标文件的包能够被安装。**二进制目标** 文件是在 crate 有 *src/main.rs* 或者其他指定为二进制文件时所创建的可执行程序，这不同于自身不能执行但适合包含在其他程序中的库目标文件。通常 crate 的 *README* 文件中有该 crate 是库、二进制目标还是两者都是的信息。
+
+所有来自 `cargo install` 的二进制文件都安装到 Rust 安装根目录的 *bin* 文件夹中。如果你使用 *rustup.rs* 安装的 Rust 且没有自定义任何配置，这将是 `$HOME/.cargo/bin`。确保将这个目录添加到 `$PATH` 环境变量中就能够运行通过 `cargo install` 安装的程序了。
+
+例如，第十二章提到的叫做 `ripgrep` 的用于搜索文件的 `grep` 的 Rust 实现。如果想要安装 `ripgrep`，可以运行如下：
+
+```shell
+chry@DESKTOP-UKSV006:/mnt/d/codes/git/studyrust/minigrep$ cargo install chry_minigrep
+    Updating `git://mirrors.ustc.edu.cn/crates.io-index` index
+  Downloaded chry_minigrep v0.1.0 (registry `git://mirrors.ustc.edu.cn/crates.io-index`)
+  Downloaded 1 crate (7.0 KB) in 3.52s
+  Installing chry_minigrep v0.1.0
+   Compiling chry_minigrep v0.1.0
+    Finished release [optimized] target(s) in 5.92s
+  Installing /home/chry/.cargo/bin/chry_minigrep
+   Installed package `chry_minigrep v0.1.0` (executable `chry_minigrep`)
+chry@DESKTOP-UKSV006:/mnt/d/codes/git/studyrust/minigrep$
+chry@DESKTOP-UKSV006:/mnt/d/codes/git/studyrust/minigrep$ chry_minigrep S Cargo.toml
+运行参数： Args { inner: ["chry_minigrep", "S", "Cargo.toml"] }
+license = "MulanPSL-2.0"     # 如果要发布到crates.io 要求声明采用的license，以告知用户可能在何种条款下使用该 crate
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+chry@DESKTOP-UKSV006:/mnt/d/codes/git/studyrust/minigrep$
+
+```
+
+最后一行输出展示了安装的二进制文件的位置和名称，在这里 `ripgrep` 被命名为 `rg`。只要你像上面提到的那样将安装目录加入 `$PATH`，就可以运行 `rg --help` 并开始使用一个更快更 Rust 的工具来搜索文件了！
+
+
+
+## 使用 `cargo uninstall` 删除从 Crates.io 安装的二进制文件
+
+```shell
+chry@DESKTOP-UKSV006:/mnt/d/codes/git/studyrust/minigrep$ cargo uninstall chry_minigrep
+    Removing /home/chry/.cargo/bin/chry_minigrep
+chry@DESKTOP-UKSV006:/mnt/d/codes/git/studyrust/minigrep$
+
+```
+

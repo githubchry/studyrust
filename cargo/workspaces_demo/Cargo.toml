@@ -1,0 +1,20 @@
+# 工作空间 workspace 是一系列共享同样的 Cargo.lock 和输出目录的包。
+# workspace 目录（workspaces_demo）和 Cargo.toml（本文件） 需要手动创建....不是用cargo命令new出来的
+[workspace]
+# 我们的工作空间有一个二进制项目和两个库。这三个 crate 将会是相同工作空间的一部分。
+# 二进制项目 adder 会提供主要功能，并会依赖另两个库。
+# 库 add_one 和 add-two 分别提供+1、+2方法。
+members = [
+    "adder",        # cargo new adder
+    "add-one",      # cargo new add-one --lib
+    "add-two",      # cargo new add-two --lib
+]
+
+# cargo并不假定工作空间中的Crates会相互依赖，所以需要明确表明工作空间中 crate 的依赖关系。
+# 既然 adder 依赖于库 crate add-one 和 add-two。
+# 首先需要在 adder/Cargo.toml 文件中增加 add-one 和 add-two 作为路径依赖...
+
+
+# 运行 cargo build 来构建工作空间！
+# 为了在顶层 add 目录运行二进制 crate，需要通过 -p 参数和包名称来运行 cargo run 指定工作空间中我们希望使用的包：
+# cargo run -p adder

@@ -1,0 +1,13 @@
+[package]
+name = "adder"
+version = "0.1.0"
+authors = ["chry <a8512413@163.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+# cargo并不假定工作空间中的Crates会相互依赖，所以需要明确表明工作空间中 crate 的依赖关系。
+[dependencies]
+add-one = { path = "../add-one" }
+add-two = { path = "../add-two" }
+rand = "0.5.5"  # 虽然 adder 依赖了 add-one， 而add-one里面依赖了 rand，但是如果 adder 想用到 rand ，就必须声明
