@@ -1,5 +1,8 @@
 [package]
-name = "minigrep"
+name = "chry_minigrep"  # 如果要发布到crates.io 要求包名在其仓库上未被占用，抢注方式，先到先得！
+license = "MulanPSL-2.0"     # 如果要发布到crates.io 要求声明采用的license，以告知用户可能在何种条款下使用该 crate
+# 如果要发布到crates.io 要求对该 crate 进行描述，以告知用户该 crate 的作用
+description = "A simple grep implementation from The Rust Programing Book.《Rust 程序设计语言》中的一个项目例程：获取一个文件名和一个字符串作为参数，接着读取文件并找到其中包含字符串参数的行，然后打印出这些行。"
 version = "0.1.0"
 authors = ["chry <a8512413@163.com>"]
 edition = "2018"

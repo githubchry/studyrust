@@ -35,7 +35,7 @@ main 函数负责多个任务的组织问题在许多二进制项目中很常见
 use std::env;
 use std::process;
 
-use minigrep::Config;
+use chry_minigrep::Config;
 
 fn main() {
 
@@ -66,7 +66,7 @@ fn main() {
     // println!("Searching for {}", cfg.query);
     // println!("In file {}", cfg.filename);
 
-    if let Err(e) = minigrep::run(cfg) {
+    if let Err(e) = chry_minigrep::run(cfg) {
         eprintln!("Application error: {}", e);
         // 非零的退出状态是一个惯例信号，用来告诉调用程序的进程：该程序以错误状态退出了
         process::exit(1);   // std::process::exit 会立即停止程序并将传递给它的数字作为退出状态码。

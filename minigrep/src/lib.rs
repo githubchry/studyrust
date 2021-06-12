@@ -1,7 +1,54 @@
+// 注释文档生成：注释包含项的结构: //! => 这为包含注释的项，而不是位于注释之后的项增加文档。
+// 这通常用于 crate 根文件（通常是 src/lib.rs）或模块的根文件为 crate 或模块整体提供文档。
+// cargo doc --open    => 生成文档：minigrep/target/doc/minigrep/index.html
+// 以下注释显示在 minigrep 文档的首页，位于 crate 中公有项列表之上
+
+//! # mini grep
+//!
+//! `minigrep` 获取一个文件名和一个字符串作为参数，接着读取文件并找到其中包含字符串参数的行，然后打印出这些行。
+
+
 use std::error::Error;
 use std::fs;
 use std::env;
 
+// ======== 以下代码段与项目无关，仅用于示范文档注释生成 ========
+// 注释文档生成：使用 pub use 导出合适的公有 API
+// cargo doc --open    => 生成文档：minigrep/target/doc/minigrep/index.html => Re-exports
+// pub use才会生成Re-exports文档段，仅use不行...
+pub use self::kinds::PrimaryColor;
+pub use self::utils::mix;
+
+
+// cargo doc --open    => 生成文档：minigrep/target/doc/minigrep/index.html => Modules => kinds
+pub mod kinds {
+    /// The primary colors according to the RYB color model.
+    pub enum PrimaryColor {
+        Red,
+        Yellow,
+        Blue,
+    }
+
+    /// The secondary colors according to the RYB color model.
+    pub enum SecondaryColor {
+        Orange,
+        Green,
+        Purple,
+    }
+}
+
+// cargo doc --open    => 生成文档：minigrep/target/doc/minigrep/index.html => Modules => utils
+pub mod utils {
+    use crate::kinds::*;
+
+    // 下面是markdown格式文档注释，所以在web显示时会续成一行...
+    /// Combines two primary colors in equal amounts to create
+    /// a secondary color.
+    pub fn mix(c1: PrimaryColor, c2: PrimaryColor) -> SecondaryColor {
+        SecondaryColor::Orange
+    }
+}
+// ======== 以上代码段与项目无关，仅用于示范文档注释生成 ========
 
 pub struct Config {
     // 要搜索的字符串
@@ -23,6 +70,30 @@ pub struct Config {
 }
 
 impl Config {
+    /*
+    注释文档生成：文档注释使用三斜杠 /// 而不是两斜杆以支持 Markdown 注解来格式化文本。文档注释就位于需要文档的项的之前。
+    常用的文档注释： Examples Panics Errors Safety
+    在文档注释中增加示例代码块是一个清楚的表明如何使用库的方法，这么做还有一个额外的好处：cargo test 也会像测试那样运行文档中的示例代码！
+    需要注意：写完文档后改动了代码，会导致例子不能正常工作。
+
+    cargo doc --open    =>生成文档：minigrep/target/doc/minigrep/index.html => struct.Config.html
+    cargo test  => 单元测试unittests和文档测试Doc-tests
+    */
+
+    /// 根据运行参数，创建并返回一个`Config`结构体
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let cfg = chry_minigrep::Config::new(std::env::args());
+    /// /*
+    /// let cfg = chry_minigrep::Config::new(std::env::args()).unwrap_or_else(|err| {
+    ///    eprintln!("Problem parsing arguments: {}", err);
+    ///    process::exit(1);
+    /// });
+    /// */
+    /// ```
+
     // 因为我们拥有 args 的所有权，并且将通过对其进行迭代来改变 args ，所以我们可以将 mut 关键字添加到 args 参数的规范中以使其可变。
     // 返回 Result 而不应该 返回Config或调用 panic!
     pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
