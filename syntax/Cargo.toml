@@ -112,6 +112,14 @@ path = "src/26reference_counting.rs"
 name = "27refcell"
 path = "src/27refcell.rs"
 
+[[bin]]
+name = "28cycle_reference"
+path = "src/28cycle_reference.rs"
+
+[[bin]]
+name = "29weak_reference"
+path = "src/29weak_reference.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
