@@ -108,6 +108,10 @@ path = "src/25drop.rs"
 name = "26reference_counting"
 path = "src/26reference_counting.rs"
 
+[[bin]]
+name = "27refcell"
+path = "src/27refcell.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
