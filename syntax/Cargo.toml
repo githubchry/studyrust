@@ -120,6 +120,18 @@ path = "src/28cycle_reference.rs"
 name = "29weak_reference"
 path = "src/29weak_reference.rs"
 
+[[bin]]
+name = "30thread_spawn"
+path = "src/30thread_spawn.rs"
+
+[[bin]]
+name = "31thread_comm"
+path = "src/31thread_comm.rs"
+
+[[bin]]
+name = "32thread_mutex"
+path = "src/32thread_mutex.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
