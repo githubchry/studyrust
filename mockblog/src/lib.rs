@@ -18,10 +18,13 @@ impl Post {
         }
     }
 
-    // 写入博文内容
+    // 只有Draft草案状态才能修改写入博文内容
     pub fn add_text(&mut self, text: &str) {
         // add_text 获取一个 self 的可变引用，因为需要改变调用 add_text 的 Post 实例
-        self.content.push_str(text);    // push_str追加字符串text到content后面
+
+        //self.content.push_str(text);    // push_str追加字符串text到content后面
+
+        self.content += self.state.as_ref().unwrap().add_text(text);
     }
 
     // 获取博文内容
@@ -57,10 +60,17 @@ impl Post {
         }
     }
 
-    // 将 state 设置为审核通过时应处于的状态
+    // 审核通过: 将 state 设置为审核通过时应处于的状态-发布
     pub fn approve(&mut self) {
         if let Some(s) = self.state.take() {
             self.state = Some(s.approve())
+        }
+    }
+
+    // 审核不通过：将 state 设置为审核通过时应处于的状态-草案
+    pub fn reject(&mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.reject())
         }
     }
 }
@@ -80,6 +90,12 @@ trait State {
     // 审核通过
     fn approve(self: Box<Self>) -> Box<dyn State>;
 
+    // 审核不通过
+    fn reject(self: Box<Self>) -> Box<dyn State>;
+
+    // 修改博文，仅在草案阶段才能修改
+    fn add_text<'a>(&self, text: &'a str) -> &'a str { "" }
+
     // 返回内容：默认空，仅需在Published状态重载返回内容
     // 注意这个方法需要生命周期注解: 这里获取 post 的引用作为参数，并返回 post 一部分的引用（Published），所以返回的引用的生命周期与 post 参数相关。
     fn content<'a>(&self, post: &'a Post) -> &'a str {
@@ -96,9 +112,11 @@ impl State for Draft {
         Box::new(PendingReview {})
     }
 
-    fn approve(self: Box<Self>) -> Box<dyn State> {
-        self
-    }
+    fn approve(self: Box<Self>) -> Box<dyn State> { self }
+
+    fn reject(self: Box<Self>) -> Box<dyn State> { self }
+
+    fn add_text<'a>(&self, text: &'a str) -> &'a str { text }
 }
 
 // 等待审核状态
@@ -110,9 +128,14 @@ impl State for PendingReview {
         self
     }
 
-    // 返回一个新的、装箱的 Published 结构体的实例 表示审核通过，已发布状态
+    // 返回一个新的、装箱的 Published 结构体的实例 表示审核通过 => 已发布状态
     fn approve(self: Box<Self>) -> Box<dyn State> {
         Box::new(Published {})
+    }
+
+    // 返回一个新的、装箱的 Draft 结构体的实例  表示审核不通过 => 草案状态
+    fn reject(self: Box<Self>) -> Box<dyn State> {
+        Box::new(Draft {})
     }
 }
 
@@ -124,9 +147,9 @@ impl State for Published {
         self
     }
 
-    fn approve(self: Box<Self>) -> Box<dyn State> {
-        self
-    }
+    fn approve(self: Box<Self>) -> Box<dyn State> { self }
+
+    fn reject(self: Box<Self>) -> Box<dyn State> { self }
 
     fn content<'a>(&self, post: &'a Post) -> &'a str {
         &post.content

@@ -20,15 +20,26 @@ fn main() {
     let mut post = Post::new();
 
     // 在草案阶段为博文编写一些文本
-    post.add_text("I ate a salad for lunch today");
+    post.add_text("Hello");
     assert_eq!("", post.content());
+
+    post.add_text(" ");
 
     // 尝试在审核之前立即打印出博文的内容，什么也不会发生因为博文仍然是草案
     post.request_review();
     assert_eq!("", post.content()); // 出于演示目的这里增加的 assert_eq!
 
-    // 请求审核博文，而在等待审核的阶段 content 应该仍然返回空字符串
+    post.add_text("---");   // 审核阶段，修改不起作用
+
+    // 审核不通过 => 回退到草案阶段
+    post.reject();
+
+    post.add_text("World");
+
+    post.request_review();
+
+    // 审核通过，而在等待审核的阶段 content 应该仍然返回空字符串
     post.approve();
     // 最后当博文审核通过，它应该被发表，这意味着当调用 content 时博文的文本将被返回。
-    assert_eq!("I ate a salad for lunch today", post.content());
+    assert_eq!("Hello World", post.content());
 }
