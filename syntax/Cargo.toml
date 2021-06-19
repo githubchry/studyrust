@@ -129,8 +129,12 @@ name = "31thread_comm"
 path = "src/31thread_comm.rs"
 
 [[bin]]
-name = "32thread_mutex"
-path = "src/32thread_mutex.rs"
+name = "33pattern_usage"
+path = "src/33pattern_usage.rs"
+
+[[bin]]
+name = "34pattern_syntax"
+path = "src/34pattern_syntax.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
