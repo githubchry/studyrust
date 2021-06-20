@@ -148,6 +148,10 @@ path = "src/36advanced_traits.rs"
 name = "37advanced_types"
 path = "src/37advanced_types.rs"
 
+[[bin]]
+name = "38advanced_functions_closures"
+path = "src/38advanced_functions_closures.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
