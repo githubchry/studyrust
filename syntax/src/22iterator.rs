@@ -36,7 +36,7 @@ fn main() {
         }
     还未讲到的新语法：type Item 和 Self::Item，他们定义了 trait 的 关联类型（associated type）
     => 实现 Iterator trait 要求同时定义一个 Item 类型，这个 Item 类型被用作 next 方法的返回值类型。
-        换句话说，Item 类型将是迭代器返回元素的类型。
+        换句话说，Item 类型将是迭代器返回元素的类型。详情见36advanced_traits.rs
 
     next 是 Iterator 实现者被要求定义的唯一方法。next 一次返回迭代器中的一个项，封装在 Some 中，当迭代器结束时，它返回 None。
      */

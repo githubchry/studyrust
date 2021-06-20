@@ -140,6 +140,10 @@ path = "src/34pattern_syntax.rs"
 name = "35unsafe"
 path = "src/35unsafe.rs"
 
+[[bin]]
+name = "36advanced_traits"
+path = "src/36advanced_traits.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
