@@ -144,6 +144,10 @@ path = "src/35unsafe.rs"
 name = "36advanced_traits"
 path = "src/36advanced_traits.rs"
 
+[[bin]]
+name = "37advanced_types"
+path = "src/37advanced_types.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
