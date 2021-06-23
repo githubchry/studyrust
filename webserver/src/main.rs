@@ -20,7 +20,8 @@ fn main() {
     */
     let pool = ThreadPool::new(4);  // 创建一个数量为4的线程池 具体实现看lib.rs
 
-    for stream in listener.incoming() {
+    // 在处理3个请求（包括空请求）之后通过退出循环来停止 server（测试线程池优雅停机功能）
+    for stream in listener.incoming().take(3) {
         /*
         TcpListener 的 incoming 方法返回一个迭代器，它提供了一系列的流（更准确的说是 TcpStream 类型的流）。
         流（stream）代表一个客户端和服务端之间打开的连接。
@@ -34,6 +35,7 @@ fn main() {
 
         // thread::spawn(|| { handle_connection(stream); }); // 为每一个流分配了一个新线程进行处理
     }
+    println!("Shutting down.");
 }
 
 fn handle_connection(mut stream: TcpStream) {
@@ -43,7 +45,7 @@ fn handle_connection(mut stream: TcpStream) {
 
     stream.read(&mut buffer).unwrap();  // 从 TcpStream 中读取字节并放入buffer中。
 
-    println!("Request: {}", String::from_utf8_lossy(&buffer[..]));
+    println!("Request:\n{}\n", String::from_utf8_lossy(&buffer[..]));
     /*
     String::from_utf8_lossy 函数获取一个 &[u8] 并产生一个 String。
     函数名的 “lossy” 部分来源于当其遇到无效的 UTF-8 序列时的行为：它使用 �，U+FFFD REPLACEMENT CHARACTER，来代替无效序列。
